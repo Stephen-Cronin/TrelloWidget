@@ -46,7 +46,7 @@ class CardRemoteViewFactory(private val context: Context,
     override fun getViewAt(position: Int): RemoteViews {
         val card = cards[position]
         val views = RemoteViews(context.packageName, R.layout.card)
-        setLabels(views, card)
+//        setLabels(views, card)
         setTitle(views, card)
         setBadges(views, card)
         setDivider(views)
@@ -71,11 +71,19 @@ class CardRemoteViewFactory(private val context: Context,
     }
 
     private fun setTitle(views: RemoteViews, card: Card) {
-        setTextView(context, views, R.id.card_title, card.name, color, R.dimen.card_badges_text)
+        if (card.badges.checkItems > 0) {
+            val text = "${card.badges.checkItemsChecked}/${card.badges.checkItems}"
+            setTextView(context, views, R.id.card_title, card.name + " " + text, color, R.dimen.card_badges_text)
+        }
+        else {
+            setTextView(context, views, R.id.card_title, card.name, color, R.dimen.card_badges_text)
+        }
+//        setTextView(context, views, R.id.card_title, "${card.name} $text", color, R.dimen.card_badges_text)
     }
 
     private fun setSubscribed(views: RemoteViews, card: Card) {
-        setBadge(views, R.id.subscribed, R.drawable.ic_visibility_white_24dp, card.badges.subscribed)
+//        setBadge(views, R.id.subscribed, R.drawable.ic_visibility_white_24dp, card.badges.subscribed)
+        setBadge(views, R.id.subscribed, R.drawable.ic_visibility_white_24dp, false)
     }
 
     private fun setVotes(views: RemoteViews, card: Card) {
@@ -85,26 +93,30 @@ class CardRemoteViewFactory(private val context: Context,
     }
 
     private fun setDescription(views: RemoteViews, card: Card) {
-        setBadge(views, R.id.desc, R.drawable.ic_subject_white_24dp, card.badges.description)
+//        setBadge(views, R.id.desc, R.drawable.ic_subject_white_24dp, card.badges.description)
+        setBadge(views, R.id.desc, R.drawable.ic_subject_white_24dp, visible = false)
     }
 
     private fun setDueDate(views: RemoteViews, card: Card) {
         val visible = card.badges.due != null
         val text = if (visible) DateTimeUtil.parseDate(card.badges.due!!) else ""
         setBadge(views, R.id.due, R.id.due_string,
-                R.drawable.ic_access_time_white_24dp, text, visible)
+//                R.drawable.ic_access_time_white_24dp, text, visible)
+                R.drawable.ic_access_time_white_24dp, text, visible=false)
     }
 
     private fun setChecklist(views: RemoteViews, card: Card) {
         val text = "${card.badges.checkItemsChecked}/${card.badges.checkItems}"
         val visible = card.badges.checkItems > 0
         setBadge(views, R.id.checklist, R.id.checklist_count,
-                R.drawable.ic_check_box_white_24dp, text, visible)
+//                R.drawable.ic_check_box_white_24dp, text, visible)
+                R.drawable.ic_check_box_white_24dp, text, visible=false)
     }
 
     private fun setComments(views: RemoteViews, card: Card) {
         setIntBadge(views, R.id.comments, R.id.comment_count,
-                R.drawable.ic_chat_bubble_outline_white_24dp, card.badges.comments)
+//                R.drawable.ic_chat_bubble_outline_white_24dp, card.badges.comments)
+                R.drawable.ic_chat_bubble_outline_white_24dp, 0)
     }
 
     private fun setAttachments(views: RemoteViews, card: Card) {
